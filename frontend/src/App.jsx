@@ -77,7 +77,7 @@ function createSimEngine() {
 // ─── MAIN APP ─────────────────────────────────────────────────
 export default function App() {
   const [connected, setConnected] = useState(false);
-  const [simMode, setSimMode] = useState(true);
+  const [simMode, setSimMode] = useState(false);
   const [instrument, setInstrument] = useState("NQM5");
   const [bigThreshold, setBigThreshold] = useState(BIG_TRADE_THRESHOLD);
   
