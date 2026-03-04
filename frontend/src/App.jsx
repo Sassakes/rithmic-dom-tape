@@ -102,15 +102,25 @@ export default function App() {
         wsRef.current.send(JSON.stringify({ type: 'subscribe', instrument }));
       };
       
-      wsRef.current.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === 'dom') {
-          setDom(data.payload);
-        } else if (data.type === 'tape') {
-          setTape(prev => [data.payload, ...prev].slice(0, TAPE_MAX));
-          setCvd(data.payload.cvd);
-        }
-      };
+wsRef.current.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    if (data.type === 'dom') {
+      setDom({
+        bids: data.bids || [],
+        asks: data.asks || [],
+        midPrice: data.mid || 0,
+        spread: data.spread || 0
+      });
+    } else if (data.type === 'tape') {
+      if (data.trades) {
+        setTape(data.trades);
+        setCvd(data.cvd || 0);
+      } else if (data.trade) {
+        setTape(prev => [data.trade, ...prev].slice(0, TAPE_MAX));
+        setCvd(data.cvd || 0);
+      }
+    }
+};
       
       wsRef.current.onclose = () => {
         setConnected(false);
